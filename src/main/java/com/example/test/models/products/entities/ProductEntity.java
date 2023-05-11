@@ -25,11 +25,11 @@ public class ProductEntity {
     private String status;
     @Column(name = "BRAND_ID")
     private Long brandId;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("PRODUCT_CATEGORY_ID")
     @JoinColumn(name = "PRODUCT_CATEGORY_ID")
     private ProductCategoryEntity productCategoryEntity;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("BRAND_ID")
     @JoinColumn(name = "BRAND_ID")
     private BrandEntity brandEntity;

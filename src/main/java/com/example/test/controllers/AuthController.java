@@ -11,6 +11,8 @@ import com.example.test.exceptions.TokenRefreshException;
 import com.example.test.services.RefreshTokenService;
 import com.example.test.services.UserCustomDetailService;
 import com.example.test.services.impl.UserServiceImpl;
+import io.github.resilience4j.ratelimiter.RequestNotPermitted;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -41,8 +43,9 @@ public class AuthController {
         return new ResponseEntity<>(new ResponseMessage("Create user success!"), HttpStatus.OK);
     }
     @PostMapping("/signin")
+    @RateLimiter(name = "rateLimiterAPI")
     public ResponseEntity<?> login(@RequestBody SignInForm signInForm){
-        return ResponseEntity.ok(userCustomDetailService.login(signInForm));
+            return ResponseEntity.ok(userCustomDetailService.login(signInForm));
     }
     @PostMapping("/refreshtoken")
     public ResponseEntity<?> refreshToken(@RequestBody TokenRefreshRequest request){
