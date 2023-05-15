@@ -1,0 +1,8 @@
+package com.example.test.modules.product_categories.dtos;
+
+import lombok.Data;
+
+@Data
+public class ProductCategoryDto {
+    private String productCategoryName;
+}
