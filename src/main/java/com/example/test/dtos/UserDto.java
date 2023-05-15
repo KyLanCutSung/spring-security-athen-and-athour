@@ -1,6 +1,6 @@
 package com.example.test.dtos;
 
-import com.example.test.models.countries.dtos.CountryDto;
+import com.example.test.modules.countries.dtos.CountryDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

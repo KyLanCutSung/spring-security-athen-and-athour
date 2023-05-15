@@ -3,7 +3,7 @@ package com.example.test.services.impl;
 import com.example.test.dtos.RoleDto;
 import com.example.test.dtos.UserDto;
 import com.example.test.entities.UserEntity;
-import com.example.test.models.countries.dtos.CountryDto;
+import com.example.test.modules.countries.dtos.CountryDto;
 import com.example.test.repositories.UserRepository;
 import com.example.test.services.UserService;
 import org.modelmapper.ModelMapper;

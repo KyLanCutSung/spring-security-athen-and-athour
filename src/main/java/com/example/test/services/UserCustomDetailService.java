@@ -4,8 +4,10 @@ import com.example.test.configs.jwts.JwtProvider;
 import com.example.test.dtos.reponse.JwtResponse;
 import com.example.test.dtos.reponse.ResponseMessage;
 //import com.example.test.dtos.request.SignInForm;
+import com.example.test.dtos.request.ForgotPasswordRequest;
 import com.example.test.dtos.request.SignInForm;
 import com.example.test.dtos.request.SignUpForm;
+import com.example.test.dtos.request.UpdatePasswordRequest;
 import com.example.test.entities.RefreshToken;
 import com.example.test.entities.RoleEntity;
 import com.example.test.entities.UserEntity;
@@ -14,7 +16,10 @@ import com.example.test.enums.RoleName;
 import com.example.test.repositories.UserRepository;
 import com.example.test.services.impl.RoleServiceImpl;
 import com.example.test.services.impl.UserServiceImpl;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -29,13 +34,16 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class UserCustomDetailService implements UserDetailsService {
     @Autowired
     private UserRepository userRepository;
@@ -99,5 +107,25 @@ public class UserCustomDetailService implements UserDetailsService {
         RefreshToken refreshToken = refreshTokenService.createRefreshToken(userPrinciple.getUserId());
         JwtResponse jwtResponse = new JwtResponse(userPrinciple.getUserId() ,token, refreshToken.getToken(), userPrinciple.getName(), userPrinciple.getAuthorities());
         return jwtResponse;
+    }
+
+    public void updatePassword(UpdatePasswordRequest updatePasswordRequest){
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(updatePasswordRequest.getUsername(), updatePasswordRequest.getPassword()));
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        UserPrinciple userPrinciple = (UserPrinciple) authentication.getPrincipal();
+        UserEntity userEntity = userRepository.findByUsername(userPrinciple.getUsername()).get();
+        userEntity.setPassword(passwordEncoder.encode(updatePasswordRequest.getNewPassword()));
+        userRepository.save(userEntity);
+    }
+
+    public void forgotPassword(ForgotPasswordRequest forgotPasswordRequest){
+        Optional<UserEntity> userEntity = userRepository.findByEmail(forgotPasswordRequest.getEmail());
+        if(userEntity.isPresent()){
+            userEntity.get().setPassword(passwordEncoder.encode(forgotPasswordRequest.getNewPassword()));
+            userRepository.save(userEntity.get());
+        } else {
+            throw new EntityNotFoundException("User is not existed!");
+        }
     }
 }

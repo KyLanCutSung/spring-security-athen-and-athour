@@ -1,15 +1,12 @@
 package com.example.test.entities;
 
-import com.example.test.models.countries.entities.CountryEntity;
-import com.example.test.models.products.entities.ProductEntity;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.example.test.modules.countries.entities.CountryEntity;
+import com.example.test.modules.products.entities.ProductEntity;
 import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Data

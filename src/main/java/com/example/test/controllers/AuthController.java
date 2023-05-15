@@ -3,15 +3,12 @@ package com.example.test.controllers;
 import com.example.test.configs.jwts.JwtProvider;
 import com.example.test.dtos.reponse.ResponseMessage;
 import com.example.test.dtos.reponse.TokenRefreshResponse;
-import com.example.test.dtos.request.SignInForm;
-import com.example.test.dtos.request.SignUpForm;
-import com.example.test.dtos.request.TokenRefreshRequest;
+import com.example.test.dtos.request.*;
 import com.example.test.entities.RefreshToken;
 import com.example.test.exceptions.TokenRefreshException;
 import com.example.test.services.RefreshTokenService;
 import com.example.test.services.UserCustomDetailService;
 import com.example.test.services.impl.UserServiceImpl;
-import io.github.resilience4j.ratelimiter.RequestNotPermitted;
 import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -58,5 +55,17 @@ public class AuthController {
                     return ResponseEntity.ok(new TokenRefreshResponse(token, requestRefreshToken));
                 })
                 .orElseThrow(()-> new TokenRefreshException(requestRefreshToken,"Refresh token is not in database"));
+    }
+
+    @PostMapping("/update-password")
+    public ResponseEntity<?> updatePassword(@RequestBody UpdatePasswordRequest updatePasswordRequest){
+        userCustomDetailService.updatePassword(updatePasswordRequest);
+        return new ResponseEntity<>("Đổi mật khẩu thành công", HttpStatus.OK);
+    }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<?> forgotPassword(@RequestBody ForgotPasswordRequest forgotPasswordRequest){
+            userCustomDetailService.forgotPassword(forgotPasswordRequest);
+            return new ResponseEntity<>("Đổi mật khẩu thành công", HttpStatus.OK);
     }
 }
